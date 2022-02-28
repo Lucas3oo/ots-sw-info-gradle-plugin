@@ -8,6 +8,9 @@ import org.gradle.api.artifacts.ResolvedDependency;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author Lucas Persson
+ */
 class NewToReleaseHelperTest {
 
   private ArtifactMetadata mArtifactMetadataNetty4173;

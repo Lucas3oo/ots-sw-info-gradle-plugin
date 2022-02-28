@@ -8,6 +8,9 @@ import org.gradle.api.reporting.ReportingExtension;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.util.GradleVersion;
 
+/**
+ * @author Lucas Persson
+ */
 public class OtsSwInfoPlugin implements Plugin<Project> {
 
   private static final GradleVersion SUPPORTED_VERSION = GradleVersion.version("7.0");

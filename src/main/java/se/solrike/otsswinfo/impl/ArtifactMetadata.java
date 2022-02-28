@@ -4,6 +4,9 @@ import java.util.Objects;
 
 import org.gradle.api.artifacts.ResolvedDependency;
 
+/**
+ * @author Lucas Persson
+ */
 @SuppressWarnings("java:S1104")
 public class ArtifactMetadata implements Comparable<ArtifactMetadata> {
 

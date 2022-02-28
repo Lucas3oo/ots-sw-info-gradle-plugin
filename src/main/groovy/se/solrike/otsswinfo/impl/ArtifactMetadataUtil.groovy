@@ -8,6 +8,9 @@ import org.gradle.api.artifacts.ResolveException
 import groovy.xml.XmlSlurper
 import groovy.xml.slurpersupport.GPathResult
 
+/**
+ * @author Lucas Persson
+ */
 class ArtifactMetadataUtil {
 
   /**

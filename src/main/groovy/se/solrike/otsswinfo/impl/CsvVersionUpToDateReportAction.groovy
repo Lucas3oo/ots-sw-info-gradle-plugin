@@ -2,6 +2,8 @@ package se.solrike.otsswinfo.impl
 
 /**
  * Generate a CSV report with tab as separator
+ *
+ * @author Lucas Persson
  */
 public class CsvVersionUpToDateReportAction {
 

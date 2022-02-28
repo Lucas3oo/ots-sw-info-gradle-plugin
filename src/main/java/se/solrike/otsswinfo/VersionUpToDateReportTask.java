@@ -2,7 +2,6 @@ package se.solrike.otsswinfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.gradle.api.artifacts.ComponentMetadata;
 import org.gradle.api.artifacts.ComponentSelection;
@@ -16,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import se.solrike.otsswinfo.impl.ArtifactMetadata;
 import se.solrike.otsswinfo.impl.CsvVersionUpToDateReportAction;
+import se.solrike.otsswinfo.impl.StableVersionUtil;
 
 /**
  * The task will scan all projects runtime dependencies and generate a report with version and if the there is a later
@@ -89,26 +89,13 @@ public abstract class VersionUpToDateReportTask extends VersionReportTask {
     ComponentMetadata metadata = selection.getMetadata();
     // @formatter:off
     boolean accepted = (metadata == null)
-        || (metadata.getStatus().equals("release") && isStable(metadata.getId().getVersion()))
+        || (metadata.getStatus().equals("release") && StableVersionUtil.isStable(metadata.getId().getVersion()))
         || selection.getCandidate().getVersion().equals("none");
     // @formatter:on
     if (!accepted) {
       // run with -i and this will be printed on the console
       selection.reject("Component status " + metadata.getStatus() + " rejected");
     }
-  }
-
-  protected static boolean isStable(String version) {
-    return stableKeyword(version) || stableVersion(version);
-  }
-
-  protected static boolean stableKeyword(String version) {
-    return List.of("RELEASE", "FINAL", "GA").stream().anyMatch(keyword -> version.toUpperCase().contains(keyword));
-  }
-
-  protected static boolean stableVersion(String version) {
-    String regex = "^[0-9,.v-]+(-r)?$";
-    return version.matches(regex);
   }
 
 }

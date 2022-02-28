@@ -8,6 +8,9 @@ import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author Lucas Persson
+ */
 class OtsSwInfoExtensionAndTaskTest {
 
   private Project mProject;

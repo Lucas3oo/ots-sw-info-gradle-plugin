@@ -1,5 +1,8 @@
 package se.solrike.otsswinfo.impl
 
+/**
+ * @author Lucas Persson
+ */
 class NewToReleaseHelper {
 
   private String mPreviousReport;
