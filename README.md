@@ -54,15 +54,6 @@ otsSwInfo {
   reportsDir = 'someFolder' // default build/reports/otsswinfo
   scanRootProject = false // default false if the project is a multiproject
 }
-
-otsSwInfo {
-  excludeProjects = ['data-platform-api','integration-testframework']
-  excludeArtifactGroups = ['com.cepheid.nexus']
-  extraVersionInfo = ["Version description for $project.name $releaseVersion"]
-  previousReportFile = layout.projectDirectory.file('config/dependencyReport/Admin1.3_DependencyReport.csv')
-}
-
-
 ```
 
 
