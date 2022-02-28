@@ -1,0 +1,92 @@
+plugins {
+  id 'java-gradle-plugin'
+  id 'groovy'
+
+  // Apply the Plugin Publish Plugin to make plugin publication possible
+  id 'com.gradle.plugin-publish' version '0.20.0'
+
+  // Apply the Maven Publish Plugin to have it generate the publication metadata
+  id 'maven-publish'
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  testImplementation 'org.mockito:mockito-core:3.7.7'
+  testImplementation 'org.mockito:mockito-junit-jupiter:3.7.7'
+  testImplementation('org.assertj:assertj-core:3.22.0')
+  testImplementation('org.junit.jupiter:junit-jupiter')
+  testImplementation(platform('org.junit:junit-bom:5.8.2'))
+}
+
+group = 'se.solrike.otsswinfo'
+version = '1.0.0-beta.1'
+sourceCompatibility = '11'
+
+tasks.withType(GroovyCompile) {
+  configure(options) {
+    options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
+  }
+}
+
+sourceSets {
+  main {
+    java {
+      srcDirs = [] // don't compile Java code twice
+    }
+    groovy {
+      srcDirs = [
+        'src/main/groovy',
+        'src/main/java'
+      ]
+    }
+  }
+}
+
+test {
+  useJUnitPlatform()
+}
+
+
+// publish the plugin like: ./gradlew publishPlugins
+gradlePlugin {
+  plugins {
+    otsSwInfoPlugin {
+      id = 'se.solrike.otsswinfo'
+      implementationClass = 'se.solrike.otsswinfo.OtsSwInfoPlugin'
+    }
+  }
+}
+
+pluginBundle {
+  website = 'https://github.com/Lucas3oo/ots-sw-info-gradle-plugin'
+  vcsUrl = 'https://github.com/Lucas3oo/ots-sw-info-gradle-plugin'
+
+  description = '''
+Gradle plugin to generate version and license reports for your Java (multi)project.
+The plugin scans all the dependencies and the transitive dependencies (off the shelf software, OTS-SW)
+and lists the version and license for each dependency.
+
+The plugin can also generate an version up-to-date report for the dependencies.
+
+Min Gradle version 7.0.'''
+
+  plugins {
+    otsSwInfoPlugin {
+      // id is captured from java-gradle-plugin configuration
+      displayName = 'OTS SW info plugin'
+      tags = [
+        'version',
+        'license',
+        'up-to-date check'
+      ]
+    }
+  }
+}
+
+// to upgrade the metainfo about which gradle version we shall use. Run ./gradlew wrapper after you have updated the version. The commit the new wrapper files except the gradlew.bat
+wrapper {
+  gradleVersion = '7.4'
+}
