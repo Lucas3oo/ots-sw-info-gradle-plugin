@@ -14,6 +14,8 @@ import groovy.xml.slurpersupport.GPathResult
 class ArtifactMetadataUtil {
 
   /**
+   * Find all dependencies meta data like license info etc from the Maven POM file.
+   *
    * @param artifactName on format group:moduleName:version
    */
   public static ArtifactMetadata updateArtifactMetadataRecursive(Project project, String artifactName, ArtifactMetadata artifactMetadata) {
@@ -24,7 +26,7 @@ class ArtifactMetadataUtil {
     try {
       pomFile = pomConfiguration.resolve().asList().first()
     } catch (ResolveException e) {
-      project.logger.warn("Unable to retrieve license for $artifactName since the POM file could not be resolved." + e)
+      project.logger.warn("Unable to retrieve license for $artifactName since the POM file could not be resolved.", e)
       return artifactMetadata
     }
 
@@ -36,7 +38,7 @@ class ArtifactMetadataUtil {
     try {
       pomXml = slurper.parse(pomFile)
     } catch (org.xml.sax.SAXParseException e) {
-      project.logger.warn("Unable to parse POM file for $artifactName")
+      project.logger.warn("Unable to parse POM file for $artifactName", e)
       return artifactMetadata
     }
 

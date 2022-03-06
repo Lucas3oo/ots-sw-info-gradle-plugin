@@ -1,5 +1,6 @@
 package se.solrike.otsswinfo
 
+import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 import org.gradle.testkit.runner.BuildResult
@@ -23,31 +24,42 @@ class IntegrationTest extends Specification {
     new File(mProjectDir, "settings.gradle")
   }
 
+  private getPermissiveLicenseFile() {
+    new File(mProjectDir, "permissiveLicenses.txt")
+  }
+
   def 'setup'() {
     settingsFile << ""
     buildFile << """
 plugins {
   id ('java-library')
-  id('se.solrike.otsswinfo')
+  id ('se.solrike.otsswinfo')
 }
-
 repositories {
   mavenCentral()
 }
-
-dependencies {
-  api 'org.springframework:spring-core:5.3.5'
-  implementation 'org.slf4j:slf4j-api:1.7.30'
-}
-
 group = 'com.example.mylib'
 version = '1.0.0'
 sourceCompatibility = '11'
 """
   }
 
+  def addDepAndConfig() {
+    buildFile << """
+dependencies {
+  api 'org.springframework:spring-core:5.3.5'
+  implementation 'org.slf4j:slf4j-api:1.7.30'
+}
+otsSwInfo {
+  disallowedLicenses = ['MIT License']
+}
+"""
+  }
+
+
   def "can run versionReport task"() {
     given: "build file as in setup"
+    addDepAndConfig()
 
     when: "exeute the task"
     def result = runGradle(true, List.of("versionReport"));
@@ -60,6 +72,7 @@ sourceCompatibility = '11'
 
   def "can run versionUpToDateReport task"() {
     given: "build file as in setup"
+    addDepAndConfig()
 
     when: "exeute the task"
     def result = runGradle(true, List.of("versionUpToDateReport"));
@@ -68,6 +81,47 @@ sourceCompatibility = '11'
     result.task(':versionUpToDateReport').outcome == SUCCESS
     and: "the report shall find 3 dependencies outdated since all are using old versions"
     result.output.contains("Number of OTS SW that are outdated: 3 out of 3")
+  }
+
+
+  def "can run licenseCheck task with disallowed list configured"() {
+    given: "build file as in setup"
+    addDepAndConfig()
+
+    when: "exeute the task"
+    def result = runGradle(false, List.of("licenseCheck"));
+
+    then: "the build shall be successful"
+    result.task(':licenseCheck').outcome == FAILED
+    and: "one dependecy has disallowed licence"
+    result.output.contains("Number of OTS SW with disallowed licenses: 1")
+    and: "the disallowed liceses is MIT"
+    result.output.contains("Dependency org.slf4j:slf4j-api:1.7.30 has a disallowed license of 'MIT License' from URL: http://www.opensource.org/licenses/mit-license.php")
+  }
+
+  def "can run licenseCheck task with custom permissive license file"() {
+    given: "build file with custom permissive license file"
+    permissiveLicenseFile << """
+Eclipse Distribution License - v 1.0
+"""
+    buildFile << """
+dependencies {
+  api 'org.glassfish.jaxb:txw2:2.3.5' // has Eclipse Distribution License - v 1.0 license
+}
+
+otsSwInfo {
+  permissiveLicenses = layout.projectDirectory.file('permissiveLicenses.txt')
+}
+
+"""
+
+    when: "exeute the task"
+    def result = runGradle(true, List.of("licenseCheck"));
+
+    then: "the build shall be successful"
+    result.task(':licenseCheck').outcome == SUCCESS
+    and: "all depndecies have allowed licences since the EDL license was added"
+    result.output.contains("Number of OTS SW with disallowed licenses: 0")
   }
 
 

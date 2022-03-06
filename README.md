@@ -5,6 +5,14 @@ and lists the version and license for each dependency.
 
 The plugin can also generate an version up-to-date report for the dependencies.
 
+And the plugin can also check the license on each dependency. Default
+[popular open source licenses](https://opensource.org/licenses) will not give a
+warning but licenses like [AGPL](https://opensource.org/licenses/AGPL-3.0) that are problematic to use from commercial
+software will optional fail the build.
+
+This plugin works best with dependencies that follows https://semver.org semantic versioning and have proper info
+in the POM xml in the Maven repo.
+
 
 ## Usage
 
@@ -56,6 +64,68 @@ otsSwInfo {
 }
 ```
 
+If the algorithm to determine what versions are to be considered stable needs to be customised then this kind of
+closure can be configured:
+
+```groovy
+def isStableCheck = { String version ->
+  def stableKeyword = ['JRE'].any { it -> version.toUpperCase().contains(it) }
+  return stableKeyword || se.solrike.otsswinfo.IsStableDefault.isStable(version)
+}
+otsSwInfo {
+  // customize what is considered a stable version
+  isStable = isStableCheck
+}
+```
+
+Configure the `otsSwInfo` extension to use the task `licenseCheck`.
+
+```groovy
+otsSwInfo {
+  excludeArtifactGroups = ['com.example.mylib']
+  excludeOwnGroup = true // default true id the project has the group property set
+  excludeProjects = ['my-cool-component-api','integration-testframework']
+  scanRootProject = false // default false if the project is a multiproject
+  // optionally override the file with permissiveLicenses
+  // the task simply checks the license text if it is present in the file.
+  permissiveLicenses = layout.projectDirectory.file('permissiveLicenses.txt')
+  // explicit disallow some licenses that are default allowed by the plugin
+  disallowedLicenses = ['GNU General Public License', 'GPL-1.0', 'GPL-1.0+', 'GPL-2.0', 'GPL-2.0+', 'GPL-3.0', 'GPL-3.0+']
+  ignoreFailures = true // don't fail the build if disallowed license are used, default false
+}
+```
+
+## Sample reports
+### Version and license report in CSV
+
+|Name|Version|Package Name|Manufacturer URL|Description|License|
+|-----|-----|-----|-----|-----|-----|
+|slf4j-api|1.7.30|org.slf4j|http://www.slf4j.org|The slf4j API|MIT License|
+|spring-aop|5.3.5|org.springframework|https://github.com/spring-projects/spring-framework|Spring AOP|Apache License, Version 2.0|
 
 
+### Version up-to-date report in CSV
+
+|Name|Version|Package Name|Latest|
+|-----|-----|-----|-----|
+|slf4j-api|1.7.30|org.slf4j|No - 1.7.36|
+|spring-aop|5.3.5|org.springframework|No - 5.3.16|
+
+
+
+## Allowed licenses
+The list of allowed licenses are in four files:
+
+* [Permissive](./src/main/resources/se/solrike/otsswinfo/impl/permissiveLicenses.txt)
+* [Weak copyleft](./src/main/resources/se/solrike/otsswinfo/impl/weakCopyLeftLicenses.txt)
+* [Strong copyleft](./src/main/resources/se/solrike/otsswinfo/impl/strongCopyLeftLicenses.txt)
+* [GNU](./src/main/resources/se/solrike/otsswinfo/impl/gnuLicenses.txt)
+
+They are in general fine to use if the software is hosted and not distributed.
+
+## Release notes
+
+### 1.0.0-beta.2
+* Externalise the algorithm to determine the format of a stable release.
+* Add licenseCheck task
 

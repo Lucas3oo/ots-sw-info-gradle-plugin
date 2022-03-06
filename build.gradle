@@ -23,13 +23,17 @@ dependencies {
 }
 
 group = 'se.solrike.otsswinfo'
-version = '1.0.0-beta.1'
+version = '1.0.0-beta.2'
 sourceCompatibility = '11'
 
 tasks.withType(GroovyCompile) {
   configure(options) {
     options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
   }
+}
+
+javadoc {
+  enabled = false
 }
 
 sourceSets {
@@ -57,6 +61,7 @@ sourceSets {
   }
 }
 
+
 test {
   useJUnitPlatform()
 }
@@ -81,6 +86,7 @@ The plugin scans all the dependencies and the transitive dependencies (off the s
 and lists the version and license for each dependency.
 
 The plugin can also generate an version up-to-date report for the dependencies.
+And the plugin can also check the license on each dependency.
 
 Min Gradle version 7.0.'''
 
@@ -91,7 +97,8 @@ Min Gradle version 7.0.'''
       tags = [
         'version',
         'license',
-        'up-to-date check'
+        'up-to-date check',
+        'license check'
       ]
     }
   }

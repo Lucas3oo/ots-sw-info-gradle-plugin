@@ -10,7 +10,7 @@ public class CsvVersionUpToDateReportAction {
   final static String SEPARATOR = '\t'
 
 
-  public void generateReport(File reportsDir, List<String> extraVersionInfo, List<ArtifactMetadata> dependencies) {
+  public File generateReport(File reportsDir, List<String> extraVersionInfo, List<ArtifactMetadata> dependencies) {
     reportsDir.mkdirs()
     File file = new File(reportsDir, "JavaVersionUpToDateReport.csv")
 
@@ -32,5 +32,6 @@ public class CsvVersionUpToDateReportAction {
       file << (metadata.latest ? 'Yes' : "No - $metadata.latestVersion")
       file << '\n'
     })
+    return file
   }
 }

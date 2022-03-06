@@ -2,7 +2,7 @@ package se.solrike.otsswinfo.impl
 
 /**
  * Generate a CSV report with tab as separator
- * 
+ *
  * @author Lucas Persson
  */
 public class CsvVersionReportAction {
@@ -10,7 +10,7 @@ public class CsvVersionReportAction {
   final static String SEPARATOR = '\t'
 
 
-  public void generateReport(File reportsDir, List<String> extraVersionInfo, boolean includeNewToRelease, List<ArtifactMetadata> dependencies) {
+  public File generateReport(File reportsDir, List<String> extraVersionInfo, boolean includeNewToRelease, List<ArtifactMetadata> dependencies) {
     reportsDir.mkdirs()
     File file = new File(reportsDir, "JavaVersionAndLicenseReport.csv")
 
@@ -42,5 +42,6 @@ public class CsvVersionReportAction {
       }
       file << '\n'
     })
+    return file
   }
 }

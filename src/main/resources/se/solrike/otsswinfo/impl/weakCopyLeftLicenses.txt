@@ -1,0 +1,25 @@
+Artistic-2.0
+
+Common Development and Distribution License (CDDL) v1.0
+CDDL 1.1
+
+CDDL/GPLv2+CE
+CDDL + GPLv2 with classpath exception
+
+EPL 1.0
+EPL 2.0
+Eclipse Public License (EPL), Version 1.0
+Eclipse Public License - v 1.0
+Eclipse Public License - v 2.0
+Eclipse Public License v. 2.0
+
+GPL-2.0-classpath-exception
+GPL-2.0-GCC-exception
+GPL-3.0-GCC-exception
+
+Mozilla Public License
+MPL 1.1
+MPL-1.0
+MPL-1.1
+MPL-2.0
+MPL-2.0-no-copyleft-exception

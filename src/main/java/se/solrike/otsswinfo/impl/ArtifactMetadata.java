@@ -27,9 +27,10 @@ public class ArtifactMetadata implements Comparable<ArtifactMetadata> {
    */
   public String url;
   public String description = "";
-  public boolean newToRelease = true;
+  public Boolean newToRelease;
   // if null then it wasn't possible to figure it out
   public String latestVersion;
+  public Boolean hasAllowedLicense;
 
   /**
    *
