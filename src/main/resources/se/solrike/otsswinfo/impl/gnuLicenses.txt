@@ -13,6 +13,6 @@ LGPL-3.0
 LGPL-3.0+
 
 GNU Library General Public License v2.1 or later
-GNU Library Public License:
+GNU Library Public License
 LGPL-2.0
 LGPL.2.0+
