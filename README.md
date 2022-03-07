@@ -125,6 +125,12 @@ They are in general fine to use if the software is hosted and not distributed.
 
 ## Release notes
 
+### 1.0.0-beta.4
+* Change the CSV format on the version up-to-date report to be CSV with padding so it is viewable on the console too.
+
+### 1.0.0-beta.3
+* It is possible to specify the separator character for CSV files.
+
 ### 1.0.0-beta.2
 * Externalise the algorithm to determine the format of a stable release.
 * Add licenseCheck task

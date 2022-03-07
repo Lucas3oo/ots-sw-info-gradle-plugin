@@ -64,13 +64,13 @@ public abstract class VersionUpToDateReportTask extends OtsSwInfoBaseTask {
     ArrayList<ArtifactMetadata> deps = new ArrayList<>(mDependencies.values());
     Collections.sort(deps);
     CsvVersionUpToDateReportAction reportAction = new CsvVersionUpToDateReportAction();
-    return reportAction.generateReport(getReportsDir().getAsFile().get(), getExtraVersionInfo().get(), deps);
+    return reportAction.generateReport(getReportCsvSeparator().getOrElse(","), getReportsDir().getAsFile().get(),
+        getExtraVersionInfo().get(), deps);
 
   }
 
   protected void setLatestVersion() {
     for (ArtifactMetadata metadata : mDependencies.values()) {
-
       // use Ivy notation with "+" to get the latest
       // but we might end up with an alpha or beta release so those needs to be filtered out
       Dependency query = getProject().getDependencies()
@@ -78,7 +78,8 @@ public abstract class VersionUpToDateReportTask extends OtsSwInfoBaseTask {
 
       Configuration latestConfiguration = getProject().getConfigurations().detachedConfiguration(query);
 
-      addRevisionFilter(latestConfiguration);
+      // configure stable version filter
+      configureVersionFilter(latestConfiguration);
 
       LenientConfiguration lenient = latestConfiguration.getResolvedConfiguration().getLenientConfiguration();
 
@@ -87,13 +88,12 @@ public abstract class VersionUpToDateReportTask extends OtsSwInfoBaseTask {
         metadata.latestVersion = latest.getModuleVersion();
       }
       else {
-        sLogger.error("Not possible to determin if {} is latest version or not", metadata.artifactName);
+        sLogger.error("Not possible to determin if {} is latest version or not.", metadata.artifactName);
       }
-
     }
   }
 
-  protected void addRevisionFilter(Configuration configuration) {
+  protected void configureVersionFilter(Configuration configuration) {
     configuration.resolutionStrategy(strategy -> strategy.componentSelection(rules -> rules.all(this::revisionFilter)));
   }
 

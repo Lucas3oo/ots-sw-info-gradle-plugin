@@ -24,12 +24,11 @@ class ArtifactMetadataUtil {
 
     File pomFile
     try {
-      pomFile = pomConfiguration.resolve().asList().first()
+      pomFile = pomConfiguration.resolve().asList().first() // will only be one file in the list
     } catch (ResolveException e) {
-      project.logger.warn("Unable to retrieve license for $artifactName since the POM file could not be resolved.", e)
+      project.logger.warn("Unable to retrieve license for $artifactName since the configuration for the POM file could not be resolved.", e)
       return artifactMetadata
     }
-
 
     XmlSlurper slurper = new XmlSlurper(true, false)
     slurper.setErrorHandler(new org.xml.sax.helpers.DefaultHandler())

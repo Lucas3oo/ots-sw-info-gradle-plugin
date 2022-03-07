@@ -72,6 +72,15 @@ public abstract class OtsSwInfoBaseTask extends DefaultTask {
   public abstract DirectoryProperty getReportsDir();
 
   /**
+   * CSV separator. Default ",".
+   *
+   * @return CSV separator character
+   */
+  @Input
+  @Optional
+  public abstract Property<String> getReportCsvSeparator();
+
+  /**
    * In a multiproject it might not be interesting to scan the root project. Default false if the project is a
    * multiproject.
    *

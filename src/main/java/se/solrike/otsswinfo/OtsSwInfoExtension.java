@@ -56,6 +56,13 @@ public interface OtsSwInfoExtension {
   DirectoryProperty getReportsDir();
 
   /**
+   * CSV separator. Default ",".
+   *
+   * @return CSV separator character
+   */
+  Property<String> getReportCsvSeparator();
+
+  /**
    * In a multiproject it might not be interesting to scan the root project. Default false if the project is a
    * multiproject.
    *

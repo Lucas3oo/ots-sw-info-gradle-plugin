@@ -48,8 +48,8 @@ public abstract class VersionReportTask extends OtsSwInfoBaseTask {
     ArrayList<ArtifactMetadata> deps = new ArrayList<>(mDependencies.values());
     Collections.sort(deps);
     CsvVersionReportAction reportAction = new CsvVersionReportAction();
-    return reportAction.generateReport(getReportsDir().getAsFile().get(), getExtraVersionInfo().get(),
-        getPreviousReportFile().isPresent(), deps);
+    return reportAction.generateReport(getReportCsvSeparator().getOrElse(","), getReportsDir().getAsFile().get(),
+        getExtraVersionInfo().get(), getPreviousReportFile().isPresent(), deps);
   }
 
   protected void setNewToRelease() {

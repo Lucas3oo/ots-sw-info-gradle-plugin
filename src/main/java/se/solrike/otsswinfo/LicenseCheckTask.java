@@ -97,11 +97,7 @@ public abstract class LicenseCheckTask extends OtsSwInfoBaseTask {
 
     scanDependencies();
 
-    LicenseCheckHelper l = new LicenseCheckHelper();
-    mLicensesList.add(l.loadLicenses(getGnuLicenses(), "gnuLicenses.txt"));
-    mLicensesList.add(l.loadLicenses(getPermissiveLicenses(), "permissiveLicenses.txt"));
-    mLicensesList.add(l.loadLicenses(getStrongCopyLeftLicenses(), "strongCopyLeftLicenses.txt"));
-    mLicensesList.add(l.loadLicenses(getWeakCopyLeftLicenses(), "weakCopyLeftLicenses.txt"));
+    loadLicensesFiles();
 
     setHasPermissiveLicenses();
 
@@ -117,6 +113,14 @@ public abstract class LicenseCheckTask extends OtsSwInfoBaseTask {
       // fail build
       throw new GradleException(resultMessage);
     }
+  }
+
+  protected void loadLicensesFiles() {
+    LicenseCheckHelper l = new LicenseCheckHelper();
+    mLicensesList.add(l.loadLicenses(getGnuLicenses(), "gnuLicenses.txt"));
+    mLicensesList.add(l.loadLicenses(getPermissiveLicenses(), "permissiveLicenses.txt"));
+    mLicensesList.add(l.loadLicenses(getStrongCopyLeftLicenses(), "strongCopyLeftLicenses.txt"));
+    mLicensesList.add(l.loadLicenses(getWeakCopyLeftLicenses(), "weakCopyLeftLicenses.txt"));
   }
 
   protected void setHasPermissiveLicenses() {

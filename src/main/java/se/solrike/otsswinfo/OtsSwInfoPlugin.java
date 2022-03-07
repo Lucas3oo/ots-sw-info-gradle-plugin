@@ -75,6 +75,7 @@ public class OtsSwInfoPlugin implements Plugin<Project> {
     task.getExcludeProjects().set(extension.getExcludeProjects());
     task.getExtraVersionInfo().set(extension.getExtraVersionInfo());
     task.getReportsDir().set(extension.getReportsDir());
+    task.getReportCsvSeparator().set(extension.getReportCsvSeparator());
     task.getScanRootProject().set(extension.getScanRootProject());
   }
 
