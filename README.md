@@ -32,7 +32,7 @@ same groupId as the multiproject.
 
 The reports are CSV files that uses tab as separator.
 
-There are two tasks; one `versionReport` that generates a report on the version and license for each dependency by
+There are two report tasks; one `versionReport` that generates a report on the version and license for each dependency by
 scanning all the dependencies and the transitive dependencies. The license info is taken from the dependencies pom.xml.
 If the info in that is missing the parent POM is used instead until a license info is found.
 
@@ -46,6 +46,7 @@ false positive since it will think version `23.0` is the latest stable version o
 Some dependencies lacks proper meta data, like `commons-codec:commons-codec:1.15` then the latest version will be `null`.
 A warning is also printed on the console when executing the report task.
 
+The license check task; `licenseCheck` checks all dependencies licenses if they are allowed or not. If the license name is in any of the four pre-defined [files](./src/main/resources/se/solrike/otsswinfo/impl/) then it is considered to be allowed.
 
 ### Configure OTS SW info Plugin
 
