@@ -1,4 +1,8 @@
 # ots-sw-info-gradle-plugin
+
+[![License][license-image]][license-url]
+[![Issues][issues-image]][issues-url]
+
 Gradle plugin to generate version and license reports for your Java (multi)project.
 The plugin scans all the dependencies and the transitive dependencies (off the shelf software, OTS-SW)
 and lists the version and license for each dependency.
