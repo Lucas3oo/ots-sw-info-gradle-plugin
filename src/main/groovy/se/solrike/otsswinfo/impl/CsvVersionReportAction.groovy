@@ -44,6 +44,6 @@ public class CsvVersionReportAction {
 
   // escape " with "" as specified in https://www.ietf.org/rfc/rfc4180.txt
   protected String escape(String value) {
-    return value.replace('"', '""')
+    return (value != null ? value.replace('"', '""') : null)
   }
 }

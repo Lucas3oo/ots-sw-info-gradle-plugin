@@ -126,6 +126,9 @@ They are in general fine to use if the software is hosted and not distributed.
 
 ## Release notes
 
+### 1.0.0-beta.5
+* Make the report generation from Maven info more robust against missing info.
+
 ### 1.0.0-beta.4
 * Change the CSV format on the version up-to-date report to be CSV with padding so it is viewable on the console too.
 
