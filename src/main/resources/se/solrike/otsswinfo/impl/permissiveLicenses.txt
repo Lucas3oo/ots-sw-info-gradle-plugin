@@ -42,6 +42,7 @@ ICU
 ISC License
 ISC
 
+MIT license
 The MIT License
 The MIT License (MIT)
 X11

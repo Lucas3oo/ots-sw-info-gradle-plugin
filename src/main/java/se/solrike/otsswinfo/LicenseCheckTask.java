@@ -99,7 +99,7 @@ public abstract class LicenseCheckTask extends OtsSwInfoBaseTask {
 
     loadLicensesFiles();
 
-    setHasPermissiveLicenses();
+    setHasApprovedLicenses();
 
     long noofDepsWithDisallowedLicense = mDependencies.values()
         .stream()
@@ -123,12 +123,12 @@ public abstract class LicenseCheckTask extends OtsSwInfoBaseTask {
     mLicensesList.add(l.loadLicenses(getWeakCopyLeftLicenses(), "weakCopyLeftLicenses.txt"));
   }
 
-  protected void setHasPermissiveLicenses() {
+  protected void setHasApprovedLicenses() {
     for (ArtifactMetadata artifactMetadata : mDependencies.values()) {
 
       boolean isLicenseApproved = false;
       for (String licenses : mLicensesList) {
-        isLicenseApproved = isLicenseApproved || licenses.contains(artifactMetadata.license);
+        isLicenseApproved = isLicenseApproved || safeContains(licenses, artifactMetadata.license);
       }
       isLicenseApproved = isLicenseApproved && !getDisallowedLicenses().get().contains(artifactMetadata.license);
       artifactMetadata.hasAllowedLicense = isLicenseApproved;
@@ -138,6 +138,10 @@ public abstract class LicenseCheckTask extends OtsSwInfoBaseTask {
       }
     }
 
+  }
+
+  protected boolean safeContains(String str, String value) {
+    return (value != null && str.contains(value));
   }
 
 }

@@ -31,7 +31,7 @@ public class CsvVersionReportAction {
       file << "$metadata.artifact.moduleName${separator}"
       file << "$metadata.artifact.moduleVersion${separator}"
       file << "$metadata.artifact.moduleGroup${separator}"
-      file << "$metadata.url${separator}"
+      file << "\"${escape(metadata.url)}\"${separator}"
       file << "\"${escape(metadata.description)}\"${separator}"
       file << "\"${escape(metadata.license)}\"${separator}"
       if (includeNewToRelease) {
@@ -44,6 +44,6 @@ public class CsvVersionReportAction {
 
   // escape " with "" as specified in https://www.ietf.org/rfc/rfc4180.txt
   protected String escape(String value) {
-    return (value != null ? value.replace('"', '""') : null)
+    return (value != null ? value.replace('"', '""') : '')
   }
 }

@@ -125,6 +125,9 @@ The list of allowed licenses are in four files:
 They are in general fine to use if the software is hosted and not distributed.
 
 ## Release notes
+### 1.0.0-beta.6
+* Added some more alias for MIT and LGPL licenses
+* Fixed the reports to not print null in case the info is missing.
 
 ### 1.0.0-beta.5
 * Make the report generation from Maven info more robust against missing info.
