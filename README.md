@@ -83,13 +83,11 @@ Configure the `otsSwInfo` extension to use the task `licenseCheck`.
 
 ```groovy
 otsSwInfo {
-  excludeArtifactGroups = ['com.example.mylib']
-  excludeOwnGroup = true // default true id the project has the group property set
-  excludeProjects = ['my-cool-component-api','integration-testframework']
-  scanRootProject = false // default false if the project is a multiproject
   // optionally override the file with permissiveLicenses
   // the task simply checks the license text if it is present in the file.
   permissiveLicenses = layout.projectDirectory.file('permissiveLicenses.txt')
+  // explicitly allow licenses in addition to the four licenses files
+  allowedLicenses = ['Eclipse Distribution License - v 1.0']
   // explicit disallow some licenses that are default allowed by the plugin
   disallowedLicenses = ['GNU General Public License', 'GPL-1.0', 'GPL-1.0+', 'GPL-2.0', 'GPL-2.0+', 'GPL-3.0', 'GPL-3.0+']
   ignoreFailures = true // don't fail the build if disallowed license are used, default false
@@ -125,6 +123,9 @@ The list of allowed licenses are in four files:
 They are in general fine to use if the software is hosted and not distributed.
 
 ## Release notes
+### 1.0.0-beta.7
+* Added configuration property to specify additional allowed licenses in addition to the four files.
+
 ### 1.0.0-beta.6
 * Added some more alias for MIT and LGPL licenses
 * Fixed the reports to not print null in case the info is missing.

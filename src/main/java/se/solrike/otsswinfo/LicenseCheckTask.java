@@ -69,6 +69,15 @@ public abstract class LicenseCheckTask extends OtsSwInfoBaseTask {
   public abstract RegularFileProperty getWeakCopyLeftLicenses();
 
   /**
+   * Explicit list with allowed licenses in addition to the four licenses files.
+   *
+   * @return list of allowed licenses
+   */
+  @Input
+  @Optional
+  public abstract ListProperty<String> getAllowedLicenses();
+
+  /**
    * Explicit list with disallowed licenses which takes precedence over the files with allowed licenses.
    *
    * @return list of disallowed licenses
@@ -97,9 +106,9 @@ public abstract class LicenseCheckTask extends OtsSwInfoBaseTask {
 
     scanDependencies();
 
-    loadLicensesFiles();
+    loadAllowedLicenses();
 
-    setHasApprovedLicenses();
+    setHasAllowedLicenses();
 
     long noofDepsWithDisallowedLicense = mDependencies.values()
         .stream()
@@ -115,15 +124,16 @@ public abstract class LicenseCheckTask extends OtsSwInfoBaseTask {
     }
   }
 
-  protected void loadLicensesFiles() {
+  protected void loadAllowedLicenses() {
     LicenseCheckHelper l = new LicenseCheckHelper();
     mLicensesList.add(l.loadLicenses(getGnuLicenses(), "gnuLicenses.txt"));
     mLicensesList.add(l.loadLicenses(getPermissiveLicenses(), "permissiveLicenses.txt"));
     mLicensesList.add(l.loadLicenses(getStrongCopyLeftLicenses(), "strongCopyLeftLicenses.txt"));
     mLicensesList.add(l.loadLicenses(getWeakCopyLeftLicenses(), "weakCopyLeftLicenses.txt"));
+    mLicensesList.addAll(getAllowedLicenses().get());
   }
 
-  protected void setHasApprovedLicenses() {
+  protected void setHasAllowedLicenses() {
     for (ArtifactMetadata artifactMetadata : mDependencies.values()) {
 
       boolean isLicenseApproved = false;

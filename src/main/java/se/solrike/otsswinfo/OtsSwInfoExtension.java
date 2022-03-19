@@ -116,6 +116,13 @@ public interface OtsSwInfoExtension {
   RegularFileProperty getWeakCopyLeftLicenses();
 
   /**
+   * Explicit list with allowed licenses in addition to the four licenses files.
+   *
+   * @return list of allowed licenses
+   */
+  ListProperty<String> getAllowedLicenses();
+
+  /**
    * Explicit list with disallowed licenses which takes precedence over the files with allowed licenses.
    *
    * @return list of disallowed licenses

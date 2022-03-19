@@ -44,6 +44,7 @@ public class OtsSwInfoPlugin implements Plugin<Project> {
       task.getPermissiveLicenses().set(extension.getPermissiveLicenses());
       task.getStrongCopyLeftLicenses().set(extension.getStrongCopyLeftLicenses());
       task.getWeakCopyLeftLicenses().set(extension.getWeakCopyLeftLicenses());
+      task.getAllowedLicenses().set(extension.getAllowedLicenses());
       task.getDisallowedLicenses().set(extension.getDisallowedLicenses());
       task.getIgnoreFailures().set(extension.getIgnoreFailures());
       updateTask(extension, task);
