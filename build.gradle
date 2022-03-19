@@ -14,6 +14,7 @@ repositories {
 }
 
 dependencies {
+  implementation 'com.vdurmont:semver4j:3.1.0'
   testImplementation 'org.assertj:assertj-core:3.22.0'
   testImplementation 'org.junit.jupiter:junit-jupiter'
   testImplementation 'org.mockito:mockito-core:3.7.7'
@@ -23,7 +24,7 @@ dependencies {
 }
 
 group = 'se.solrike.otsswinfo'
-version = '1.0.0-beta.7'
+version = '1.0.0-beta.8'
 sourceCompatibility = '11'
 
 tasks.withType(GroovyCompile) {
@@ -85,8 +86,11 @@ Gradle plugin to generate version and license reports for your Java (multi)proje
 The plugin scans all the dependencies and the transitive dependencies (off the shelf software, OTS-SW)
 and lists the version and license for each dependency.
 
+The plugin creates a software bill-of-meterial report in CSV format.
+
 The plugin can also generate an version up-to-date report for the dependencies.
-And the plugin can also check the license on each dependency.
+
+The plugin can also check the license on each dependency if they are allowed according to a specified policy.
 
 Min Gradle version 7.0.'''
 
@@ -98,7 +102,11 @@ Min Gradle version 7.0.'''
         'version',
         'license',
         'up-to-date check',
-        'license check'
+        'license check',
+        'bom',
+        'sbom',
+        'dependency',
+        'dependencies'
       ]
     }
   }

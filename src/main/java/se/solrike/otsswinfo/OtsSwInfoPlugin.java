@@ -35,6 +35,8 @@ public class OtsSwInfoPlugin implements Plugin<Project> {
       task.setDescription(
           "Generate a version up-to-date report for all the dependecies including trasitive dependencies.");
       task.getIsStable().set(extension.getIsStable());
+      task.getAllowedOldMajorVersion().set(extension.getAllowedOldMajorVersion());
+      task.getAllowedOldMinorVersion().set(extension.getAllowedOldMinorVersion());
       updateTask(extension, task);
     });
 

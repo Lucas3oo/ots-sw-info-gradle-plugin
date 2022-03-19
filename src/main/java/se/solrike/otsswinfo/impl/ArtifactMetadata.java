@@ -31,6 +31,7 @@ public class ArtifactMetadata implements Comparable<ArtifactMetadata> {
   // if null then it wasn't possible to figure it out
   public String latestVersion;
   public Boolean hasAllowedLicense;
+  public Boolean isTooOldVersion;
 
   /**
    *

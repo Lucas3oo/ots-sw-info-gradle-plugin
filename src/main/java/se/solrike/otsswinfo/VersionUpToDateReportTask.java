@@ -11,19 +11,23 @@ import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.LenientConfiguration;
 import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vdurmont.semver4j.Semver;
+import com.vdurmont.semver4j.Semver.SemverType;
+
 import groovy.lang.Closure;
 import se.solrike.otsswinfo.impl.ArtifactMetadata;
 import se.solrike.otsswinfo.impl.CsvVersionUpToDateReportAction;
 
 /**
- * The task will scan all projects runtime dependencies and generate a report with version and if the there is a later
- * version of each dependency.
+ * The task will scan all projects runtime dependencies and generate a report with version and
+ * if the there is a later version of each dependency.
  * <p>
  * This plugin works best with dependencies that follows https://semver.org semantic versioning.
  *
@@ -42,6 +46,28 @@ public abstract class VersionUpToDateReportTask extends OtsSwInfoBaseTask {
   @Optional
   public abstract Property<Closure<Boolean>> getIsStable();
 
+  /**
+   * Allowed older major version increments compared to current stable version.
+   * <p>
+   * Default 0.
+   *
+   * @return the max number of older major version compared to current stable version.
+   */
+  @Input
+  @Optional
+  public abstract Property<Integer> getAllowedOldMajorVersion();
+
+  /**
+   * Allowed older minor version increments compared to current stable version.
+   * <p>
+   * Default 2.
+   *
+   * @return the max number of older minor version compared to current stable version.
+   */
+  @Input
+  @Optional
+  public abstract Property<Integer> getAllowedOldMinorVersion();
+
   @TaskAction
   void run() {
 
@@ -54,8 +80,10 @@ public abstract class VersionUpToDateReportTask extends OtsSwInfoBaseTask {
     File reportFile = generateUpToDateVersionReport();
 
     long noofOutdateDeps = mDependencies.values().stream().filter(metaData -> !metaData.isLatest()).count();
-    getLogger().error("Number of OTS SW that are outdated: {} out of {}", noofOutdateDeps,
+    getLogger().error("Number of OTS SW that are not the latest: {} out of {}", noofOutdateDeps,
         mDependencies.values().size());
+    long noofTooOld = mDependencies.values().stream().filter(metaData -> metaData.isTooOldVersion).count();
+    getLogger().error("Number of OTS SW that are too old: {} out of {}", noofTooOld, mDependencies.values().size());
     getLogger().error("See the version up-to-date report at: {}", reportFile.getAbsolutePath());
 
   }
@@ -86,11 +114,32 @@ public abstract class VersionUpToDateReportTask extends OtsSwInfoBaseTask {
       if (lenient.getFirstLevelModuleDependencies().iterator().hasNext()) {
         ResolvedDependency latest = lenient.getFirstLevelModuleDependencies().iterator().next();
         metadata.latestVersion = latest.getModuleVersion();
+
+        // check how old the current version is
+        metadata.isTooOldVersion = isTooOld(getAllowedOldMajorVersion().getOrElse(0),
+            getAllowedOldMinorVersion().getOrElse(2), metadata.artifact.getModuleVersion(), metadata.latestVersion);
+
       }
       else {
         sLogger.error("Not possible to determin if {} is latest version or not.", metadata.artifactName);
       }
     }
+  }
+
+  protected static boolean isTooOld(int allowedOldMajorVersion, int allowedOldMinorVersion, String currentVersion,
+      String latestVersion) {
+    // do semantic versioning comparison
+    Semver currentVersionSem = new Semver(currentVersion, SemverType.LOOSE);
+    Semver latestVersionSem = new Semver(latestVersion, SemverType.LOOSE);
+
+    boolean isTooOld = (latestVersionSem.getMajor() - currentVersionSem.getMajor()) > allowedOldMajorVersion;
+    if (isTooOld) {
+      return true;
+    }
+    else if (latestVersionSem.getMajor().equals(currentVersionSem.getMajor())) {
+      return ((latestVersionSem.getMinor() - currentVersionSem.getMinor()) > allowedOldMinorVersion);
+    }
+    return false;
   }
 
   protected void configureVersionFilter(Configuration configuration) {

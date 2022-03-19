@@ -57,7 +57,7 @@ otsSwInfo {
   excludeArtifactGroups = ['com.example.mylib']
   excludeOwnGroup = true // default true id the project has the group property set
   excludeProjects = ['my-cool-component-api','integration-testframework']
-  extraVersionInfo = ["Version description for $project.name $releaseVersion"]
+  extraVersionInfo = ["Version description for $project.name $project.version"]
   // if an old report is submitted a "new to release" column is added to the version and license report.
   previousReportFile = layout.projectDirectory.file('config/versionReport/MyProduct_1_0_JavaVersionAndLicenseReport.csv')
   reportsDir = 'someFolder' // default build/reports/otsswinfo
@@ -94,6 +94,40 @@ otsSwInfo {
 }
 ```
 
+### Configure the version report (SBOM) to be compliant with OWASP SCVS
+OWASP defines a standard for verification: [Software Component Verification Standard (SCVS)](https://owasp.org/www-project-software-component-verification-standard/).
+
+Below is an example to configure the `versionReport` task to generate a SBOM in compliance with L1 of SCVS:
+
+```groovy
+otsSwInfo {
+  extraVersionInfo = [
+    "SBOM for $project.name $project.version",
+    "ID: $project.group:$project.name:$project.version",
+    "Timestamp: ${new Date()}"
+  ]
+}
+```
+
+### Configure the versionUpToDateReport task with open source policies for version age
+OWASP [Software Component Verification Standard (SCVS)](https://owasp.org/www-project-software-component-verification-standard/) suggest that organizations have an open source policy to for instance check for
+how many major or minor revisions old are acceptable.
+
+The `versionUpToDateReport` can be configured with such policy:
+
+```groovy
+otsSwInfo {
+  // don't allow any older major version compared to latest release/stable version.
+  allowedOldMajorVersion = 0
+  // allow upto 2 older minjor versions compared to latest release/stable version
+  // in case major is the same.
+  allowedOldMinorVersion = 2
+
+}
+```
+
+
+
 ## Sample reports
 ### Version and license report in CSV
 
@@ -105,10 +139,12 @@ otsSwInfo {
 
 ### Version up-to-date report in CSV
 
-|Name|Version|Package Name|Latest|
-|-----|-----|-----|-----|
-|slf4j-api|1.7.30|org.slf4j|No - 1.7.36|
-|spring-aop|5.3.5|org.springframework|No - 5.3.16|
+|Name|Version|Package Name|Latest|To old|
+|-----|-----|-----|-----|-----|
+|slf4j-api|1.7.30|org.slf4j|No - 1.7.36|No|
+|spring-aop|5.3.5|org.springframework|No - 5.3.16|No|
+|ion-java|1.0.2|software.amazon.ion|No - 1.5.1|Yes|
+|httpclient|4.5.13|org.apache.httpcomponents|Yes|No|
 
 
 
@@ -123,6 +159,9 @@ The list of allowed licenses are in four files:
 They are in general fine to use if the software is hosted and not distributed.
 
 ## Release notes
+### 1.0.0-beta.8
+* Possible to specify a policy for how old in terms of version a dependency is allowed to be.
+
 ### 1.0.0-beta.7
 * Added configuration property to specify additional allowed licenses in addition to the four files.
 

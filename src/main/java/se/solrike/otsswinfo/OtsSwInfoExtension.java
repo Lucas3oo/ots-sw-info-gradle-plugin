@@ -63,8 +63,8 @@ public interface OtsSwInfoExtension {
   Property<String> getReportCsvSeparator();
 
   /**
-   * In a multiproject it might not be interesting to scan the root project. Default false if the project is a
-   * multiproject.
+   * In a multiproject it might not be interesting to scan the root project. Default false if
+   * the project is a multiproject.
    *
    * @return true if only the root project shall be scanned.
    */
@@ -123,7 +123,8 @@ public interface OtsSwInfoExtension {
   ListProperty<String> getAllowedLicenses();
 
   /**
-   * Explicit list with disallowed licenses which takes precedence over the files with allowed licenses.
+   * Explicit list with disallowed licenses which takes precedence over the files with allowed
+   * licenses.
    *
    * @return list of disallowed licenses
    */
@@ -138,4 +139,21 @@ public interface OtsSwInfoExtension {
    */
   Property<Boolean> getIgnoreFailures();
 
+  /**
+   * Allowed older major version increments compared to current stable version.
+   * <p>
+   * Default 0.
+   *
+   * @return the max number of older major version compared to current stable version.
+   */
+  Property<Integer> getAllowedOldMajorVersion();
+
+  /**
+   * Allowed older minor version increments compared to current stable version.
+   * <p>
+   * Default 2.
+   *
+   * @return the max number of older minor version compared to current stable version.
+   */
+  Property<Integer> getAllowedOldMinorVersion();
 }
