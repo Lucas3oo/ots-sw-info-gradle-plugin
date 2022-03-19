@@ -1,7 +1,6 @@
 package se.solrike.otsswinfo
 
-import static org.gradle.testkit.runner.TaskOutcome.FAILED
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static org.gradle.testkit.runner.TaskOutcome.*
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
@@ -80,7 +79,7 @@ otsSwInfo {
     then: "the build shall be successful"
     result.task(':versionUpToDateReport').outcome == SUCCESS
     and: "the report shall find 3 dependencies outdated since all are using old versions"
-    result.output.contains("Number of OTS SW that are outdated: 3 out of 3")
+    result.output.contains("Number of OTS SW that are not the latest: 3 out of 3")
   }
 
 
