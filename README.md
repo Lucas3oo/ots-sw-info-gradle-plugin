@@ -44,10 +44,11 @@ unstable versions. For instance if the version contains any of the strings final
 a stable release. If the version follows the semantic versioning `<major>.<minor>.<patch>` it is also consider as stable.
 Some dependencies like `com.google.guava:guava:31.0.1-jre` doesn't follow that rules so here this plugin will give a
 false positive since it will think version `23.0` is the latest stable version of guava.
-Some dependencies lacks proper meta data, like `commons-codec:commons-codec:1.15` then the latest version will be `null`.
-A warning is also printed on the console when executing the report task.
+Some dependencies lacks proper meta data, like `commons-codec:commons-codec:1.15` then those dependencies will be listed
+separately in the report. A warning is also printed on the console when executing the report task.
 
-The license check task; `licenseCheck` checks all dependencies licenses if they are allowed or not. If the license name is in any of the four pre-defined [files](./src/main/resources/se/solrike/otsswinfo/impl/) then it is considered to be allowed.
+The license check task; `licenseCheck` checks all dependencies licenses if they are allowed or not. If the license name
+is in any of the four pre-defined [files](./src/main/resources/se/solrike/otsswinfo/impl/) then it is considered to be allowed.
 
 ### Configure OTS SW info Plugin
 
@@ -64,8 +65,13 @@ otsSwInfo {
   previousReportFile = layout.projectDirectory.file('config/versionReport/MyProduct_1_0_JavaVersionAndLicenseReport.csv')
   reportsDir = 'someFolder' // default build/reports/otsswinfo
   scanRootProject = false // default false if the project is a multiproject
-  // in case the dependency lacks license info you can add it here
+  // in case the dependency lacks metadata you can add it here
   additionalLicenseMetadata = ['org.eclipse:swt:4.12.0' : 'EPL-1.0', 'com.richclientgui:rcptoolbox:1.0.10' : 'EPL-1.0']
+  additionalUrlMetadata = ['com.ericsson.otp.erlang:otperlang:1.6.1' : 'https://www.erlang.org']
+  additionalDescriptionMetadata = [
+    'com.ericsson.otp.erlang:otperlang:1.6.1' : 'Erlang/OTP Java bridge',
+    'com.sun.activation:jakarta.activation:1.2.2': 'Java service activation framework'
+  }
 }
 ```
 
@@ -163,9 +169,14 @@ The list of allowed licenses are in four files:
 They are in general fine to use if the software is hosted and not distributed.
 
 ## Release notes
+### 1.0.0-beta.10
+* Added configuration property to specify additional Gradle configuration scopes to search for dependencies. Default configuration `runtimeClasspath` from a Java project is searched.
+* Added two properties where additional dependency metadata can be specified.
+* Added  _Common Public License_  to weak copyleft licenses file.
+
 ### 1.0.0-beta.9
 * More robust against missing info in POM files for dependencies.
-* Added property for specify additional metadata for dependencies in case the POM is missing info.
+* Added configuration property to specify additional metadata for dependencies in case the POM is missing info.
 
 ### 1.0.0-beta.8
 * Possible to specify a policy for how old in terms of version a dependency is allowed to be.

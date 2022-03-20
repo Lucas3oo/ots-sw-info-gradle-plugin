@@ -36,6 +36,16 @@ public interface OtsSwInfoExtension {
   ListProperty<String> getExcludeProjects();
 
   /**
+   * Configurations will be scanned for dependencies.
+   * <p>
+   * Default <code>runtimeClasspth</code> is included. But if the project is platform dependent other configuration e.g.
+   * <code>win64</code> can be included.
+   *
+   * @return list of configurations to include in the scan.
+   */
+  ListProperty<String> getIncludeConfigurations();
+
+  /**
    * Additional text to add in the beginning of the report
    *
    * @return list of string to add to the report
@@ -136,6 +146,20 @@ public interface OtsSwInfoExtension {
    * @return map with GAV format (group:artifact:version) as key and license as value.
    */
   MapProperty<String, String> getAdditionalLicenseMetadata();
+
+  /**
+   * Additional URL info to compliment in case the dependency lacks proper metadata in the POM.
+   *
+   * @return map with GAV format (group:artifact:version) as key and URL as value.
+   */
+  MapProperty<String, String> getAdditionalUrlMetadata();
+
+  /**
+   * Additional description info to compliment in case the dependency lacks proper metadata in the POM.
+   *
+   * @return map with GAV format (group:artifact:version) as key and description as value.
+   */
+  MapProperty<String, String> getAdditionalDescriptionMetadata();
 
   /**
    * Whether or not this task will ignore failures and continue running the build.

@@ -55,6 +55,18 @@ public abstract class OtsSwInfoBaseTask extends DefaultTask {
   public abstract ListProperty<String> getExcludeProjects();
 
   /**
+   * Configurations will be scanned for dependencies.
+   * <p>
+   * Default the list is empty. But recommendation is to configure with <code>runtimeClasspth</code>.
+   * <p>
+   * If the project is platform dependent other configuration e.g. <code>win64</code> can be included.
+   *
+   * @return list of configurations to include in the scan.
+   */
+  @Input
+  public abstract ListProperty<String> getIncludeConfigurations();
+
+  /**
    * Additional text to add in the beginning of the report
    *
    * @return list of string to add to the report
@@ -99,6 +111,24 @@ public abstract class OtsSwInfoBaseTask extends DefaultTask {
   @Input
   @Optional
   public abstract MapProperty<String, String> getAdditionalLicenseMetadata();
+
+  /**
+   * Additional URL info to compliment in case the dependency lacks proper metadata in the POM.
+   *
+   * @return map with GAV format (group:artifact:version) as key and URL as value.
+   */
+  @Input
+  @Optional
+  public abstract MapProperty<String, String> getAdditionalUrlMetadata();
+
+  /**
+   * Additional description info to compliment in case the dependency lacks proper metadata in the POM.
+   *
+   * @return map with GAV format (group:artifact:version) as key and description as value.
+   */
+  @Input
+  @Optional
+  public abstract MapProperty<String, String> getAdditionalDescriptionMetadata();
 
   /**
    * The key in the map is the artifact name in GAV format (group:artifact:version).
@@ -149,11 +179,12 @@ public abstract class OtsSwInfoBaseTask extends DefaultTask {
   protected void collectForRuntimeClasspath(Project project) {
     boolean hasJavaPlugin = project.getPlugins().hasPlugin(JavaBasePlugin.class);
     if (hasJavaPlugin) {
-      project.getConfigurations()
-          .getByName("runtimeClasspath")
-          .getResolvedConfiguration()
-          .getFirstLevelModuleDependencies()
-          .forEach(dep -> collectDependencies(project, dep));
+      getIncludeConfigurations().get()
+          .forEach(configuration -> project.getConfigurations()
+              .getByName(configuration)
+              .getResolvedConfiguration()
+              .getFirstLevelModuleDependencies()
+              .forEach(dep -> collectDependencies(project, dep)));
     }
   }
 
@@ -201,7 +232,12 @@ public abstract class OtsSwInfoBaseTask extends DefaultTask {
     if (metadata.license == null) {
       metadata.license = getAdditionalLicenseMetadata().get().get(metadata.artifactName);
     }
-
+    if (metadata.url == null) {
+      metadata.url = getAdditionalUrlMetadata().get().get(metadata.artifactName);
+    }
+    if (metadata.description == null || metadata.description.equals("")) {
+      metadata.description = getAdditionalDescriptionMetadata().get().get(metadata.artifactName);
+    }
     return metadata;
   }
 

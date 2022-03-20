@@ -1,9 +1,12 @@
 package se.solrike.otsswinfo;
 
+import java.util.List;
+
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.plugins.ReportingBasePlugin;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.reporting.ReportingExtension;
 import org.gradle.util.GradleVersion;
 
@@ -60,6 +63,10 @@ public class OtsSwInfoPlugin implements Plugin<Project> {
         .directoryProperty()
         .convention(reportsBaseDir.map(d -> d.dir(REPORTS_SUBDIR)));
     extension.getReportsDir().set(reportsDirectory);
+    ListProperty<String> includeConfigurationsConvention = project.getObjects()
+        .listProperty(String.class)
+        .convention(List.of("runtimeClasspath"));
+    extension.getIncludeConfigurations().set(includeConfigurationsConvention);
     return extension;
   }
 
@@ -76,11 +83,14 @@ public class OtsSwInfoPlugin implements Plugin<Project> {
     task.getExcludeArtifactGroups().set(extension.getExcludeArtifactGroups());
     task.getExcludeOwnGroup().set(extension.getExcludeOwnGroup());
     task.getExcludeProjects().set(extension.getExcludeProjects());
+    task.getIncludeConfigurations().set(extension.getIncludeConfigurations());
     task.getExtraVersionInfo().set(extension.getExtraVersionInfo());
     task.getReportsDir().set(extension.getReportsDir());
     task.getReportCsvSeparator().set(extension.getReportCsvSeparator());
     task.getScanRootProject().set(extension.getScanRootProject());
     task.getAdditionalLicenseMetadata().set(extension.getAdditionalLicenseMetadata());
+    task.getAdditionalUrlMetadata().set(extension.getAdditionalUrlMetadata());
+    task.getAdditionalDescriptionMetadata().set(extension.getAdditionalDescriptionMetadata());
   }
 
   protected void verifyGradleVersion(GradleVersion version) {

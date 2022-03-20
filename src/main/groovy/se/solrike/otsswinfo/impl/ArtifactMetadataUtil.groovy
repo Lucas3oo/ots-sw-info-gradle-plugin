@@ -18,7 +18,8 @@ class ArtifactMetadataUtil {
    *
    * @param artifactName on format group:moduleName:version
    */
-  public static ArtifactMetadata updateArtifactMetadataRecursive(Project project, String artifactName, ArtifactMetadata artifactMetadata) {
+  public static ArtifactMetadata updateArtifactMetadataRecursive(Project project, String artifactName,
+      ArtifactMetadata artifactMetadata) {
     Dependency d = project.dependencies.create("$artifactName@pom")
     Configuration pomConfiguration = project.configurations.detachedConfiguration(d)
 

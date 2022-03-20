@@ -6,6 +6,9 @@ CDDL 1.1
 CDDL/GPLv2+CE
 CDDL + GPLv2 with classpath exception
 
+Common Public License
+CPL-1.0
+
 EPL 1.0
 EPL-1.0
 EPL 2.0
