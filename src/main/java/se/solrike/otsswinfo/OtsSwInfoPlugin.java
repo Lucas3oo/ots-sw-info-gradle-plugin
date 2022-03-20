@@ -80,6 +80,7 @@ public class OtsSwInfoPlugin implements Plugin<Project> {
     task.getReportsDir().set(extension.getReportsDir());
     task.getReportCsvSeparator().set(extension.getReportCsvSeparator());
     task.getScanRootProject().set(extension.getScanRootProject());
+    task.getAdditionalLicenseMetadata().set(extension.getAdditionalLicenseMetadata());
   }
 
   protected void verifyGradleVersion(GradleVersion version) {

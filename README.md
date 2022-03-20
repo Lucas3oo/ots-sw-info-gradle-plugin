@@ -35,6 +35,7 @@ The reports are CSV files that uses tab as separator.
 There are two report tasks; one `versionReport` that generates a report on the version and license for each dependency by
 scanning all the dependencies and the transitive dependencies. The license info is taken from the dependencies pom.xml.
 If the info in that is missing the parent POM is used instead until a license info is found.
+As a last resort the plugin can be configured with a map of dependencies and licenses to fill the gaps.
 
 The other task; `versionUpToDateReport` checks if the used dependency is of latest version or not.
 Unfortunately there isn't any reliable info on what versions in Maven repository
@@ -57,11 +58,14 @@ otsSwInfo {
   excludeArtifactGroups = ['com.example.mylib']
   excludeOwnGroup = true // default true id the project has the group property set
   excludeProjects = ['my-cool-component-api','integration-testframework']
+  // extra text to add to the report
   extraVersionInfo = ["Version description for $project.name $project.version"]
   // if an old report is submitted a "new to release" column is added to the version and license report.
   previousReportFile = layout.projectDirectory.file('config/versionReport/MyProduct_1_0_JavaVersionAndLicenseReport.csv')
   reportsDir = 'someFolder' // default build/reports/otsswinfo
   scanRootProject = false // default false if the project is a multiproject
+  // in case the dependency lacks license info you can add it here
+  additionalLicenseMetadata = ['org.eclipse:swt:4.12.0' : 'EPL-1.0', 'com.richclientgui:rcptoolbox:1.0.10' : 'EPL-1.0']
 }
 ```
 
@@ -159,6 +163,10 @@ The list of allowed licenses are in four files:
 They are in general fine to use if the software is hosted and not distributed.
 
 ## Release notes
+### 1.0.0-beta.9
+* More robust against missing info in POM files for dependencies.
+* Added property for specify additional metadata for dependencies in case the POM is missing info.
+
 ### 1.0.0-beta.8
 * Possible to specify a policy for how old in terms of version a dependency is allowed to be.
 

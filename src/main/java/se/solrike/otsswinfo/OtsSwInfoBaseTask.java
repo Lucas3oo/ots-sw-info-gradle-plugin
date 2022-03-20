@@ -11,6 +11,7 @@ import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.plugins.JavaBasePlugin;
 import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
@@ -91,7 +92,16 @@ public abstract class OtsSwInfoBaseTask extends DefaultTask {
   public abstract Property<Boolean> getScanRootProject();
 
   /**
-   * THe key in the map is the artifact name in GAV format (group:artifact:version).
+   * Additional license info to compliment in case the dependency lacks proper metadata in the POM.
+   *
+   * @return map with GAV format (group:artifact:version) as key and license as value.
+   */
+  @Input
+  @Optional
+  public abstract MapProperty<String, String> getAdditionalLicenseMetadata();
+
+  /**
+   * The key in the map is the artifact name in GAV format (group:artifact:version).
    */
   protected Map<String, ArtifactMetadata> mDependencies = new HashMap<>();
 
@@ -186,7 +196,13 @@ public abstract class OtsSwInfoBaseTask extends DefaultTask {
    */
   protected ArtifactMetadata buildArtifactMetadata(Project project, ResolvedDependency artifact) {
     ArtifactMetadata metadata = new ArtifactMetadata(artifact.getName(), artifact);
-    return ArtifactMetadataUtil.updateArtifactMetadataRecursive(project, artifact.getName(), metadata);
+    metadata = ArtifactMetadataUtil.updateArtifactMetadataRecursive(project, artifact.getName(), metadata);
+
+    if (metadata.license == null) {
+      metadata.license = getAdditionalLicenseMetadata().get().get(metadata.artifactName);
+    }
+
+    return metadata;
   }
 
 }

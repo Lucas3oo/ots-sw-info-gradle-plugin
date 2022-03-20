@@ -7,7 +7,9 @@ CDDL/GPLv2+CE
 CDDL + GPLv2 with classpath exception
 
 EPL 1.0
+EPL-1.0
 EPL 2.0
+EPL-2.0
 Eclipse Public License (EPL), Version 1.0
 Eclipse Public License - v 1.0
 Eclipse Public License - v 2.0

@@ -3,6 +3,8 @@ package se.solrike.otsswinfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.gradle.api.artifacts.ComponentMetadata;
 import org.gradle.api.artifacts.ComponentSelection;
@@ -26,8 +28,8 @@ import se.solrike.otsswinfo.impl.ArtifactMetadata;
 import se.solrike.otsswinfo.impl.CsvVersionUpToDateReportAction;
 
 /**
- * The task will scan all projects runtime dependencies and generate a report with version and
- * if the there is a later version of each dependency.
+ * The task will scan all projects runtime dependencies and generate a report with version and if the there is a later
+ * version of each dependency.
  * <p>
  * This plugin works best with dependencies that follows https://semver.org semantic versioning.
  *
@@ -68,6 +70,13 @@ public abstract class VersionUpToDateReportTask extends OtsSwInfoBaseTask {
   @Optional
   public abstract Property<Integer> getAllowedOldMinorVersion();
 
+  /**
+   * Map of dependencies that weren't possible to resolve properly.
+   * <p>
+   * The key in the map is the artifact name in GAV format (group:artifact:version).
+   */
+  protected Map<String, ArtifactMetadata> mNonDetermineDependencies = new HashMap<>();
+
   @TaskAction
   void run() {
 
@@ -78,12 +87,15 @@ public abstract class VersionUpToDateReportTask extends OtsSwInfoBaseTask {
     setLatestVersion();
 
     File reportFile = generateUpToDateVersionReport();
+    int totalNumberOfDeps = mDependencies.values().size() + mNonDetermineDependencies.values().size();
 
     long noofOutdateDeps = mDependencies.values().stream().filter(metaData -> !metaData.isLatest()).count();
-    getLogger().error("Number of OTS SW that are not the latest: {} out of {}", noofOutdateDeps,
-        mDependencies.values().size());
-    long noofTooOld = mDependencies.values().stream().filter(metaData -> metaData.isTooOldVersion).count();
-    getLogger().error("Number of OTS SW that are too old: {} out of {}", noofTooOld, mDependencies.values().size());
+    getLogger().error("Number of OTS SW that are not the latest: {} out of {}", noofOutdateDeps, totalNumberOfDeps);
+    long noofTooOld = mDependencies.values()
+        .stream()
+        .filter(metaData -> metaData.isTooOldVersion != null && metaData.isTooOldVersion)
+        .count();
+    getLogger().error("Number of OTS SW that are too old: {} out of {}", noofTooOld, totalNumberOfDeps);
     getLogger().error("See the version up-to-date report at: {}", reportFile.getAbsolutePath());
 
   }
@@ -93,7 +105,7 @@ public abstract class VersionUpToDateReportTask extends OtsSwInfoBaseTask {
     Collections.sort(deps);
     CsvVersionUpToDateReportAction reportAction = new CsvVersionUpToDateReportAction();
     return reportAction.generateReport(getReportCsvSeparator().getOrElse(","), getReportsDir().getAsFile().get(),
-        getExtraVersionInfo().get(), deps);
+        getExtraVersionInfo().get(), deps, mNonDetermineDependencies.values());
 
   }
 
@@ -121,8 +133,12 @@ public abstract class VersionUpToDateReportTask extends OtsSwInfoBaseTask {
 
       }
       else {
+        mNonDetermineDependencies.put(metadata.artifactName, metadata);
         sLogger.error("Not possible to determin if {} is latest version or not.", metadata.artifactName);
       }
+    }
+    for (String gav : mNonDetermineDependencies.keySet()) {
+      mDependencies.remove(gav);
     }
   }
 
@@ -136,7 +152,8 @@ public abstract class VersionUpToDateReportTask extends OtsSwInfoBaseTask {
     if (isTooOld) {
       return true;
     }
-    else if (latestVersionSem.getMajor().equals(currentVersionSem.getMajor())) {
+    else if (latestVersionSem.getMajor().equals(currentVersionSem.getMajor()) && currentVersionSem.getMinor() != null
+        && latestVersionSem.getMinor() != null) {
       return ((latestVersionSem.getMinor() - currentVersionSem.getMinor()) > allowedOldMinorVersion);
     }
     return false;

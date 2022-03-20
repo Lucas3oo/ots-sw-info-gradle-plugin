@@ -3,6 +3,7 @@ package se.solrike.otsswinfo;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 
 import groovy.lang.Closure;
@@ -63,8 +64,8 @@ public interface OtsSwInfoExtension {
   Property<String> getReportCsvSeparator();
 
   /**
-   * In a multiproject it might not be interesting to scan the root project. Default false if
-   * the project is a multiproject.
+   * In a multiproject it might not be interesting to scan the root project. Default false if the project is a
+   * multiproject.
    *
    * @return true if only the root project shall be scanned.
    */
@@ -123,12 +124,18 @@ public interface OtsSwInfoExtension {
   ListProperty<String> getAllowedLicenses();
 
   /**
-   * Explicit list with disallowed licenses which takes precedence over the files with allowed
-   * licenses.
+   * Explicit list with disallowed licenses which takes precedence over the files with allowed licenses.
    *
    * @return list of disallowed licenses
    */
   ListProperty<String> getDisallowedLicenses();
+
+  /**
+   * Additional license info to compliment in case the dependency lacks proper metadata in the POM.
+   *
+   * @return map with GAV format (group:artifact:version) as key and license as value.
+   */
+  MapProperty<String, String> getAdditionalLicenseMetadata();
 
   /**
    * Whether or not this task will ignore failures and continue running the build.
